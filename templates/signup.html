@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <!-- Include navbar -->
+    {% include 'navbar.html' %}
+    <div class="container">
+      <h1>Sign Up</h1>
+      <form action="{{ url_for('routes.signup') }}">
+        <div class="form-group">
+          <label for="name">First Name</label>
+          <input type="text" id="name" name="name" placeholder="Hüseyin" />
+        </div>
+        <div class="form-group">
+          <label for="surname">Last Name</label>
+          <input type="text" id="surname" name="surname" placeholder="Ergün" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input
+            type="text"
+            id="phone"
+            name="phone"
+            placeholder="555-555-5555"
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="" />
+        </div>
+        <!-- New password input field -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="" />
+        </div>
+
+        <!-- Confirm password input field -->
+        <div class="form-group">
+          <label for="password_confirmation">Confirm Password</label>
+          <input
+            type="password"
+            id="password_confirmation"
+            name="password_confirmation"
+            placeholder=""
+          />
+        </div>
+
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+  </body>
+</html>
