@@ -11,8 +11,14 @@
   </head>
   <body>
     <!-- Include navbar -->
-    {% include 'navbar.html' %}
-
+    {% include 'navbar.html' %} {% with messages = get_flashed_messages() %} {%
+    if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+      <div class="flash-message">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <!-- Main content -->
     <div class="container">
       <h1>Welcome to Cheque Application</h1>
