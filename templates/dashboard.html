@@ -72,31 +72,22 @@
       .logout-button a:hover {
         background-color: #d32f2f;
       }
-
-      .flash-messages {
-        margin-top: 20px;
-      }
-
-      .flash-message {
-        padding: 10px 20px;
-        background-color: #f8d7da;
-        color: #721c24;
-        border-radius: 5px;
-        margin-bottom: 10px;
-      }
     </style>
   </head>
   <body>
     {% include 'navbar.html' %}
     <div class="container">
-      <h1>Welcome to Your Personal Page</h1>
+      <h1>Welcome to Your Personal Page , {{ user.first_name }}</h1>
       <p>This is the dashboard of your Cheque Application.</p>
+      {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash-messages">
-        {% with messages = get_flashed_messages() %} {% if messages %} {% for
-        message in messages %}
+        {% for message in messages %} {% if 'success' in message.lower() %}
+        <div class="flash-message success">{{ message }}</div>
+        {% else %}
         <div class="flash-message">{{ message }}</div>
-        {% endfor %} {% endif %} {% endwith %}
+        {% endif %} {% endfor %}
       </div>
+      {% endif %} {% endwith %}
       <h2>Cheque History</h2>
       <div class="cheque-history">
         <table class="cheque-table">

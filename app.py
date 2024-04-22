@@ -10,14 +10,40 @@ routes = Blueprint('routes', __name__)
 def index():
     return render_template('index.html')
 
-@routes.route('/cashout')
+@routes.route('/cashout', methods=['GET', 'POST'])
 def cashout_cheque():
+    print("cashout_cheque")
+    if request.method == 'POST':
+        email = request.form['email']
+        cheque_id = request.form['chequeId']
+        print("email",email," cheque_id",cheque_id)
+        # Query the database to find the cheque
+        user_id = Customer.query.filter_by(email=email).first()
+   
+        print("user_id",user_id)
+        cheque = Cheque.query.filter_by(id=cheque_id, user_id= user_id.id).first()
+
+        print("cheque",cheque)
+        if cheque:
+            # Delete the cheque from the database
+            print("Cheque found")
+            balance = user_id.balance
+            # update user balance
+            user_id.balance = balance + cheque.amount       
+            db.session.delete(cheque)
+            db.session.commit()
+            flash('Cheque cashed out successfully!', 'success')
+            return redirect(url_for('routes.dashboard'))
+        else:
+            flash('Invalid email or cheque ID. Please try again.', 'danger')
+
     return render_template('cashout_cheque.html')
+
+from flask import flash
 
 @routes.route('/cheque-details', methods=['GET', 'POST'])
 def cheque_details():
     if request.method == 'POST':
-
         email = request.form['email']
         receiver_email = request.form['receiver-email']
         cheque_id = request.form['chequeId']
@@ -25,14 +51,22 @@ def cheque_details():
         bank = request.form['bank']
         cashing_date = request.form['date']
 
+        if not email or not receiver_email or not cheque_id or not amount or not bank or not cashing_date:
+            flash('Please fill in all the fields.', 'danger')
+            return redirect(url_for('routes.cheque_details'))
+
         user = Customer.query.filter_by(email=email).first()
         receiver_customer = Customer.query.filter_by(email=receiver_email).first()
+        is_cheque_id_exist = Cheque.query.filter_by(cheque_id=cheque_id).first()
+        print("is_cheque_id_exist",is_cheque_id_exist)
 
-        if not user or not receiver_customer:
-            flash('Invalid email address. Please provide valid email addresses.', 'danger')
+        if not user or not receiver_customer or is_cheque_id_exist is not None:
+            print("Invalid email address or invalid check ID. Please provide valid email addresses.")
+
             return redirect(url_for('routes.cheque_details'))
         
         new_cheque = Cheque(
+            cheque_id=cheque_id,
             amount=amount,
             cash_out_date=cashing_date,
             bank=bank,
@@ -41,6 +75,7 @@ def cheque_details():
             receiver_customer_id=receiver_customer.id,
             created_at=datetime.now(timezone.utc)
         )
+        print("new_cheque",new_cheque)
         db.session.add(new_cheque)
 
         try:
@@ -53,6 +88,7 @@ def cheque_details():
             return redirect(url_for('routes.cheque_details'))
 
     return render_template('cheque_details.html')
+
 
 @routes.route('/login', methods=['GET', 'POST'])
 def login():
@@ -101,9 +137,10 @@ def dashboard():
         # Fetch the user's cheque history from the database
         user_id = session['user_id']
         cheque_history = Cheque.query.filter_by(user_id=user_id).all()
-        
+         # Fetch the user's information
+        user = Customer.query.get(user_id)
         # Render the dashboard template with the cheque history
-        return render_template('dashboard.html', cheque_history=cheque_history)
+        return render_template('dashboard.html', cheque_history=cheque_history,user=user)
     else:
         # If the user is not logged in, redirect to the login page
         flash('Please log in to access the dashboard.', 'danger')

@@ -13,6 +13,7 @@ class Customer(db.Model):
     password = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(50))
     is_verified = db.Column(db.Boolean, default=False)
+    balance = db.Column(db.Float, default=0.0)
     def check_password(self, password):
         return self.password == password
         
@@ -20,6 +21,7 @@ class Customer(db.Model):
 class Cheque(db.Model):
     __tablename__ = 'cheque'
     id = db.Column(db.Integer, primary_key=True)
+    cheque_id = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Float, nullable=False)
     cash_out_date = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     bank = db.Column(db.String(50), nullable=False)

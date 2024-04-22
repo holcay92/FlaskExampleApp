@@ -8,11 +8,19 @@
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <!-- Include navbar -->
-    {% include 'navbar.html' %}
+    {% include 'navbar.html' %} {% with messages = get_flashed_messages() %} {%
+    if messages %}
+    <div class="flash-messages">
+      {% for message in messages %} {% if 'success' in message.lower() %}
+      <div class="flash-message success">{{ message }}</div>
+      {% else %}
+      <div class="flash-message">{{ message }}</div>
+      {% endif %} {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <div class="container">
       <h1>Cash out the Cheque</h1>
-      <form>
+      <form action="{{ url_for('routes.cashout_cheque') }}" method="POST">
         <div class="form-group">
           <label for="email">E-mail</label>
           <input
@@ -23,8 +31,8 @@
           />
         </div>
         <div class="form-group">
-          <label for="date">Check ID</label>
-          <input type="text" id="date" name="date" placeholder="1111111111" />
+          <label for="chequeId">Check ID</label>
+          <input type="text" id="chequeId" name="chequeId" placeholder="" />
         </div>
         <button type="submit">Cash out the cheque</button>
       </form>
