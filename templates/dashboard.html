@@ -9,7 +9,14 @@
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    {% include 'navbar.html' %}
+    {% include 'navbar.html' %}{% with messages = get_flashed_messages() %} {%
+    if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+      <div class="flash-message">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <div class="container">
       <h1>Welcome to Your Personal Page</h1>
       <p>This is the dashboard of your Cheque Application.</p>

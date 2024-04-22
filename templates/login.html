@@ -9,7 +9,14 @@
   </head>
   <body>
     <!-- Include navbar -->
-    {% include 'navbar.html' %}
+    {% include 'navbar.html' %}{% with messages = get_flashed_messages() %} {%
+    if messages %}
+    <div class="flash-messages">
+      {% for message in messages %}
+      <div class="flash-message">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <div class="container">
       <h1>Login</h1>
       <form action="{{ url_for('routes.login') }}" method="POST">
