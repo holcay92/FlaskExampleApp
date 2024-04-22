@@ -18,20 +18,24 @@ def cashout_cheque():
         cheque_id = request.form['chequeId']
         print("email",email," cheque_id",cheque_id)
         # Query the database to find the cheque
-        user_id = Customer.query.filter_by(email=email).first()
+        user = Customer.query.filter_by(email=email).first()
    
-        print("user_id",user_id)
-        cheque = Cheque.query.filter_by(id=cheque_id, user_id= user_id.id).first()
+        print("user_id",user)
+        cheque = Cheque.query.filter_by(id=cheque_id, user_id= user.id).first()
+        if user.balance is None:
+            user.balance = 0.0  # Initialize the balance if it's None
+        
 
         print("cheque",cheque)
-        if cheque:
+        if cheque and cheque.status != 'Cashed Out':
             # Delete the cheque from the database
             print("Cheque found")
-            balance = user_id.balance
+            balance = user.balance
             # update user balance
-            user_id.balance = balance + cheque.amount       
-            db.session.delete(cheque)
+            user.balance += cheque.amount    
+            cheque.status = 'Cashed Out'
             db.session.commit()
+            print("user.balance",user.balance)
             flash('Cheque cashed out successfully!', 'success')
             return redirect(url_for('routes.dashboard'))
         else:
@@ -41,8 +45,8 @@ def cashout_cheque():
 
 from flask import flash
 
-@routes.route('/cheque-details', methods=['GET', 'POST'])
-def cheque_details():
+@routes.route('/deposit', methods=['GET', 'POST'])
+def deposit_cheque():
     if request.method == 'POST':
         email = request.form['email']
         receiver_email = request.form['receiver-email']
@@ -53,17 +57,17 @@ def cheque_details():
 
         if not email or not receiver_email or not cheque_id or not amount or not bank or not cashing_date:
             flash('Please fill in all the fields.', 'danger')
-            return redirect(url_for('routes.cheque_details'))
+            return redirect(url_for('routes.deposit'))
 
         user = Customer.query.filter_by(email=email).first()
         receiver_customer = Customer.query.filter_by(email=receiver_email).first()
         is_cheque_id_exist = Cheque.query.filter_by(cheque_id=cheque_id).first()
         print("is_cheque_id_exist",is_cheque_id_exist)
 
-        if not user or not receiver_customer or is_cheque_id_exist is not None:
+        if not user or not receiver_customer or (is_cheque_id_exist is not None and is_cheque_id_exist.status != 'Pending'):
             print("Invalid email address or invalid check ID. Please provide valid email addresses.")
 
-            return redirect(url_for('routes.cheque_details'))
+            return redirect(url_for('routes.deposit'))
         
         new_cheque = Cheque(
             cheque_id=cheque_id,
@@ -81,13 +85,13 @@ def cheque_details():
         try:
             db.session.commit()
             flash('Cheque details submitted successfully!', 'success')
-            return redirect(url_for('routes.cheque_details'))
+            return redirect(url_for('routes.deposit'))
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'danger')
-            return redirect(url_for('routes.cheque_details'))
+            return redirect(url_for('routes.deposit'))
 
-    return render_template('cheque_details.html')
+    return render_template('deposit_cheque.html')
 
 
 @routes.route('/login', methods=['GET', 'POST'])

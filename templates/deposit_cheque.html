@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cheque Details</title>
+    <title>DEPOSIT CHEQUE</title>
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="/static/style.css" />
   </head>
@@ -19,8 +19,8 @@
     </div>
     {% endif %} {% endwith %}
     <div class="container">
-      <h1>Cheque Details</h1>
-      <form action="{{ url_for('routes.cheque_details') }}" method="POST">
+      <h1>DEPOSIT CHEQUE</h1>
+      <form action="{{ url_for('routes.deposit_cheque') }}" method="POST">
         <div class="form-group">
           <label for="email">E-mail</label>
           <input type="email" id="email" name="email" placeholder="" />

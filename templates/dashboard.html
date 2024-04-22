@@ -18,35 +18,35 @@
         margin: 0 auto;
         padding: 20px;
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       h1 {
-        font-size: 24px;
+        font-size: 36px;
         color: #333;
         margin-bottom: 20px;
       }
 
       p {
-        font-size: 16px;
+        font-size: 18px;
         color: #666;
+        margin-bottom: 10px;
       }
 
       .cheque-history {
-        margin-top: 20px;
+        margin-top: 30px;
       }
 
       .cheque-table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 10px;
       }
 
       .cheque-table th,
       .cheque-table td {
         border: 1px solid #ccc;
-        padding: 10px;
+        padding: 12px;
         text-align: left;
       }
 
@@ -56,29 +56,46 @@
       }
 
       .logout-button {
-        margin-top: 20px;
+        margin-top: 30px;
       }
 
-      .logout-button a {
+      .logout-button form {
         display: inline-block;
+      }
+
+      .logout-button button {
         padding: 10px 20px;
         background-color: #f44336;
         color: #fff;
-        text-decoration: none;
+        border: none;
         border-radius: 5px;
+        cursor: pointer;
         transition: background-color 0.3s;
       }
 
-      .logout-button a:hover {
+      .logout-button button:hover {
         background-color: #d32f2f;
+      }
+
+      .flash-message {
+        padding: 15px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      .flash-message.success {
+        background-color: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
       }
     </style>
   </head>
   <body>
     {% include 'navbar.html' %}
     <div class="container">
-      <h1>Welcome to Your Personal Page , {{ user.first_name }}</h1>
+      <h1>Welcome to Your Personal Page, {{ user.first_name }}</h1>
       <p>This is the dashboard of your Cheque Application.</p>
+      <p>Your balance: ${{ user.balance }}</p>
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="flash-messages">
         {% for message in messages %} {% if 'success' in message.lower() %}
@@ -104,7 +121,7 @@
           <tbody>
             {% for cheque in cheque_history %}
             <tr>
-              <td>{{ cheque.id }}</td>
+              <td>{{ cheque.cheque_id }}</td>
               <td>{{ cheque.amount }}</td>
               <td>{{ cheque.bank }}</td>
               <td>{{ cheque.cash_out_date }}</td>
