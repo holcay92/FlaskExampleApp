@@ -9,9 +9,8 @@
   {% if 'user_id' not in session %}
   <a href="{{ url_for('routes.signup') }}"><button>SIGNUP</button></a>
   <a href="{{ url_for('routes.login') }}"><button>LOGIN</button></a>
-  {% endif %}
+  {% endif %} {% if 'user_id' is in session %}
   <a href="{{ url_for('routes.dashboard') }}"><button>DASHBOARD</button></a>
-  {% if 'user_id' is in session %}
   <a href="{{ url_for('routes.logout') }}"><button>LOGOUT</button></a>
 
   {% endif %}

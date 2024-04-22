@@ -120,7 +120,7 @@
           </thead>
           <tbody>
             {% for cheque in cheque_history %}
-            <tr>
+            <tr {% if cheque.status == "Cashed Out" %}style="background-color: #f8d7da;"{% else %}style="background-color: #d4edda;"{% endif %}>
               <td>{{ cheque.cheque_id }}</td>
               <td>{{ cheque.amount }}</td>
               <td>{{ cheque.bank }}</td>

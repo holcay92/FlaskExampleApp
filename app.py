@@ -21,7 +21,7 @@ def cashout_cheque():
         user = Customer.query.filter_by(email=email).first()
    
         print("user_id",user)
-        cheque = Cheque.query.filter_by(id=cheque_id, user_id= user.id).first()
+        cheque = Cheque.query.filter_by(cheque_id=cheque_id, user_id= user.id).first()
         if user.balance is None:
             user.balance = 0.0  # Initialize the balance if it's None
         
@@ -57,7 +57,7 @@ def deposit_cheque():
 
         if not email or not receiver_email or not cheque_id or not amount or not bank or not cashing_date:
             flash('Please fill in all the fields.', 'danger')
-            return redirect(url_for('routes.deposit'))
+            return redirect(url_for('routes.deposit_cheque'))
 
         user = Customer.query.filter_by(email=email).first()
         receiver_customer = Customer.query.filter_by(email=receiver_email).first()
@@ -66,8 +66,8 @@ def deposit_cheque():
 
         if not user or not receiver_customer or (is_cheque_id_exist is not None and is_cheque_id_exist.status != 'Pending'):
             print("Invalid email address or invalid check ID. Please provide valid email addresses.")
-
-            return redirect(url_for('routes.deposit'))
+            flash('Invalid email address or invalid check ID. Please provide valid email addresses.', 'danger')
+            return redirect(url_for('routes.deposit_cheque'))
         
         new_cheque = Cheque(
             cheque_id=cheque_id,
@@ -85,11 +85,11 @@ def deposit_cheque():
         try:
             db.session.commit()
             flash('Cheque details submitted successfully!', 'success')
-            return redirect(url_for('routes.deposit'))
+            return redirect(url_for('routes.deposit_cheque'))
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'danger')
-            return redirect(url_for('routes.deposit'))
+            return redirect(url_for('routes.deposit_cheque'))
 
     return render_template('deposit_cheque.html')
 
@@ -113,26 +113,47 @@ def login():
 @routes.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        print("POST method is being executed correctly.")
-  
+        # Retrieve form data
         first_name = request.form['name']
         last_name = request.form['surname']
         phone_number = request.form['phone']
         email = request.form['email']
         password = request.form['password']
+        
+        # Check if any field is empty
+        if not all([first_name, last_name, phone_number, email, password]):
+            flash('Please fill in all fields.', 'danger')
+            return redirect(url_for('routes.signup'))
+        
+        # Create datetime object for created_at
         created_at = datetime.now(timezone.utc)
+        
+        # Set default country and verification status
         country = 'Türkiye'
         is_verified = False
 
-        # Create a new customer   
-        new_customer = Customer(first_name=first_name, last_name=last_name, phone_number=phone_number, email=email, password=password, created_at=created_at, country=country, is_verified=is_verified)
-        print(new_customer)
+        # Create a new customer
+        new_customer = Customer(
+            first_name=first_name, 
+            last_name=last_name, 
+            phone_number=phone_number, 
+            email=email, 
+            password=password, 
+            created_at=created_at, 
+            country=country, 
+            is_verified=is_verified
+        )
+
+        # Add and commit the new customer to the database
         db.session.add(new_customer)
         db.session.commit()
+
+        # Flash success message and redirect to index
         flash('Sign up successful! You can now log in.', 'success')
         return redirect(url_for('routes.index'))
     else:
         return render_template('signup.html')
+
     
 @routes.route('/dashboard')
 def dashboard():

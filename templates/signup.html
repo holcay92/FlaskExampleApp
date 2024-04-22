@@ -3,15 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign Up</title>
+    <title>SIGN UP</title>
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <!-- Include navbar -->
-    {% include 'navbar.html' %}
+    {% include 'navbar.html' %} {% with messages = get_flashed_messages() %} {%
+    if messages %}
+    <div class="flash-messages">
+      {% for message in messages %} {% if 'success' in message.lower() %}
+      <div class="flash-message success">{{ message }}</div>
+      {% else %}
+      <div class="flash-message">{{ message }}</div>
+      {% endif %} {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <div class="container">
-      <h1>Sign Up</h1>
+      <h1>SIGN UP</h1>
       <p>Please fill out the form below to create an account.</p>
       <form action="{{ url_for('routes.signup') }}" method="POST">
         <div class="form-group">
@@ -52,7 +60,7 @@
           />
         </div>
 
-        <button type="submit">Sign Up</button>
+        <button type="submit">SIGN UP</button>
       </form>
     </div>
     <script>
