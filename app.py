@@ -56,7 +56,6 @@ def cheque_details():
 
 @routes.route('/login', methods=['GET', 'POST'])
 def login():
-    print("Login method is being executed correctly.")
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
@@ -110,12 +109,12 @@ def dashboard():
         flash('Please log in to access the dashboard.', 'danger')
         return redirect(url_for('routes.login'))
 
-@routes.route('/logout')
+@routes.route('/logout', methods=['GET', 'POST'])
 def logout():
     # Clear the session data
     session.clear()
     flash('You have been logged out successfully!', 'success')
-    return redirect(url_for('routes.index'))  
+    return redirect(url_for('routes.index')) 
 app.register_blueprint(routes)
 
 if __name__ == '__main__':
