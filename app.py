@@ -17,7 +17,7 @@ def cashout_cheque():
 @routes.route('/cheque-details', methods=['GET', 'POST'])
 def cheque_details():
     if request.method == 'POST':
-        # Get form data
+
         email = request.form['email']
         receiver_email = request.form['receiver-email']
         cheque_id = request.form['chequeId']
@@ -25,16 +25,13 @@ def cheque_details():
         bank = request.form['bank']
         cashing_date = request.form['date']
 
-        # Query the database to retrieve the user and receiver customer IDs based on the provided email addresses
         user = Customer.query.filter_by(email=email).first()
         receiver_customer = Customer.query.filter_by(email=receiver_email).first()
 
-        # If either user or receiver_customer is not found, display an error message
         if not user or not receiver_customer:
             flash('Invalid email address. Please provide valid email addresses.', 'danger')
             return redirect(url_for('routes.cheque_details'))
-
-        # Create a new Cheque object
+        
         new_cheque = Cheque(
             amount=amount,
             cash_out_date=cashing_date,
@@ -44,60 +41,41 @@ def cheque_details():
             receiver_customer_id=receiver_customer.id,
             created_at=datetime.now(timezone.utc)
         )
-
-        # Add the new cheque to the database session
         db.session.add(new_cheque)
 
         try:
-            # Commit the transaction to save the new cheque to the database
             db.session.commit()
             flash('Cheque details submitted successfully!', 'success')
             return redirect(url_for('routes.cheque_details'))
         except Exception as e:
-            # Rollback the transaction in case of any error
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'danger')
             return redirect(url_for('routes.cheque_details'))
 
-    # If the request method is GET, simply render the cheque details page
     return render_template('cheque_details.html')
 
 @routes.route('/login', methods=['GET', 'POST'])
 def login():
     print("Login method is being executed correctly.")
     if request.method == 'GET':
-        print("Login method 1.")
         return render_template('login.html')
     elif request.method == 'POST':
-        print("Login method 2.")
-        email = request.form['email']  # Log email for verification
+        email = request.form['email'] 
         password = request.form['password']
-        print("Login method 3.", email)
-
-        print("Trying to find user with email:", email)  # Added debug message
-
-        
         user = Customer.query.filter_by(email=email).first()
-        print("Login method 4.", user,password)
-           # Check if the provided password matches the hashed password stored in the database
         if user.check_password(password):
-                print("Login method 5.")
                 session['user_id'] = user.id
                 flash('Login successful!', 'success')
                 return redirect(url_for('routes.dashboard'))
         else:
             flash('Invalid email or password. Please try again.', 'danger')
-
-        print("Login method 6.")
-        # If user is not found or password does not match, display error message
-        flash('Invalid email or password. Please try again.', 'danger')
         return redirect(url_for('routes.login'))
 
 @routes.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         print("POST method is being executed correctly.")
-        # Get form data
+  
         first_name = request.form['name']
         last_name = request.form['surname']
         phone_number = request.form['phone']
@@ -106,12 +84,11 @@ def signup():
         created_at = datetime.now(timezone.utc)
         country = 'Türkiye'
         is_verified = False
-        # Create a new customer
-     
+
+        # Create a new customer   
         new_customer = Customer(first_name=first_name, last_name=last_name, phone_number=phone_number, email=email, password=password, created_at=created_at, country=country, is_verified=is_verified)
         print(new_customer)
         db.session.add(new_customer)
-        # Commit the transaction
         db.session.commit()
         flash('Sign up successful! You can now log in.', 'success')
         return redirect(url_for('routes.index'))
@@ -120,9 +97,25 @@ def signup():
     
 @routes.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    # Check if the user is logged in
+    if 'user_id' in session:
+        # Fetch the user's cheque history from the database
+        user_id = session['user_id']
+        cheque_history = Cheque.query.filter_by(user_id=user_id).all()
+        
+        # Render the dashboard template with the cheque history
+        return render_template('dashboard.html', cheque_history=cheque_history)
+    else:
+        # If the user is not logged in, redirect to the login page
+        flash('Please log in to access the dashboard.', 'danger')
+        return redirect(url_for('routes.login'))
 
-
+@routes.route('/logout')
+def logout():
+    # Clear the session data
+    session.clear()
+    flash('You have been logged out successfully!', 'success')
+    return redirect(url_for('routes.index'))  
 app.register_blueprint(routes)
 
 if __name__ == '__main__':

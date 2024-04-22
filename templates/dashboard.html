@@ -1,5 +1,3 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,9 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <style>
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .cheque-history {
+        margin-top: 20px;
+      }
+      .cheque-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      .cheque-table th,
+      .cheque-table td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      .cheque-table th {
+        background-color: #f2f2f2;
+      }
+      .logout-button {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
-    {% include 'navbar.html' %}{% with messages = get_flashed_messages() %} {%
+    {% include 'navbar.html' %} {% with messages = get_flashed_messages() %} {%
     if messages %}
     <div class="flash-messages">
       {% for message in messages %}
@@ -20,7 +45,36 @@
     <div class="container">
       <h1>Welcome to Your Personal Page</h1>
       <p>This is the dashboard of your Cheque Application.</p>
-      <p>This is your cheque history.</p>
+      <h2>Cheque History</h2>
+      <div class="cheque-history">
+        <table class="cheque-table">
+          <thead>
+            <tr>
+              <th>Cheque ID</th>
+              <th>Amount</th>
+              <th>Bank</th>
+              <th>Cash Out Date</th>
+              <th>Created At</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cheque in cheque_history %}
+            <tr>
+              <td>{{ cheque.id }}</td>
+              <td>{{ cheque.amount }}</td>
+              <td>{{ cheque.bank }}</td>
+              <td>{{ cheque.cash_out_date }}</td>
+              <td>{{ cheque.created_at }}</td>
+              <td>{{ cheque.status }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="logout-button">
+        <a href="{{ url_for('routes.index') }}">Logout</a>
+      </div>
     </div>
   </body>
 </html>

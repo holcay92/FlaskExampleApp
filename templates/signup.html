@@ -55,5 +55,16 @@
         <button type="submit">Sign Up</button>
       </form>
     </div>
+    <script>
+      // Select the flash messages container
+      var flashMessages = document.getElementById("flash-messages");
+
+      // Hide the flash messages after 3 seconds
+      if (flashMessages) {
+        setTimeout(function () {
+          flashMessages.style.display = "none";
+        }, 3000); // 3 seconds
+      }
+    </script>
   </body>
 </html>
