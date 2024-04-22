@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash,session
 from app import db
 from models.Customer import Customer
 
@@ -17,9 +17,25 @@ def cashout_cheque():
 def cheque_details():
     return render_template('cheque_details.html')
 
-@routes.route('/login')
+@routes.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    print("Login method is being executed correctly.")
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        print(email)
+        
+        user = Customer.query.filter_by(email=email).first()
+        print(user)
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            flash('Login successful!', 'success')
+            return redirect(url_for('routes.dashboard'))
+        else:
+            flash('Invalid email or password. Please try again.', 'danger')
+            return redirect(url_for('routes.login'))
 
 @routes.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -46,5 +62,9 @@ def signup():
     else:
         return render_template('signup.html')
     
+@routes.route('/dashboard')
+def dashboard():
+
+        return render_template('dashboard.html')
 
 
