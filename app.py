@@ -22,6 +22,7 @@ def cashout_cheque():
    
         print("user_id",user)
         cheque = Cheque.query.filter_by(cheque_id=cheque_id, user_id= user.id).first()
+        cheque_sender_user = Customer.query.filter_by(id=cheque.receiver_customer_id).first()
         if user.balance is None:
             user.balance = 0.0  # Initialize the balance if it's None
         
@@ -32,6 +33,7 @@ def cashout_cheque():
             print("Cheque found")
             balance = user.balance
             # update user balance
+            cheque_sender_user.balance -= cheque.amount
             user.balance += cheque.amount    
             cheque.status = 'Cashed Out'
             db.session.commit()
@@ -74,9 +76,9 @@ def deposit_cheque():
             amount=amount,
             cash_out_date=cashing_date,
             bank=bank,
-            user_id=user.id,
+            user_id=receiver_customer.id,
             status='Pending',
-            receiver_customer_id=receiver_customer.id,
+            receiver_customer_id=user.id,
             created_at=datetime.now(timezone.utc)
         )
         print("new_cheque",new_cheque)
