@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cheque Detail</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 0;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        margin-top: 100px;
+        background-color: #fff;
+        border: 2px solid #000;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .cheque-detail {
+        padding: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+      }
+
+      .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+
+      .sender-receiver-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .sender-info,
+      .receiver-info {
+        flex-basis: 48%;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'navbar.html' %}
+    <div class="container">
+      <div class="cheque-detail">
+        <div class="sender-receiver-info">
+          <div class="sender-info">
+            <p><strong>Sender Information:</strong></p>
+            <p>
+              <strong>Name:</strong> {{ receiver_user.first_name }} {{
+              receiver_user.last_name }}
+            </p>
+            <p><strong>Email:</strong> {{ receiver_user.email }}</p>
+          </div>
+        </div>
+        <table>
+          <tr>
+            <th colspan="2">Cheque Details</th>
+          </tr>
+          <tr>
+            <td><strong>Cheque ID:</strong></td>
+            <td>{{ cheque.cheque_id }}</td>
+          </tr>
+          <tr>
+            <td><strong>Amount:</strong></td>
+            <td>${{ cheque.amount }}</td>
+          </tr>
+          <tr>
+            <td><strong>Bank:</strong></td>
+            <td>{{ cheque.bank }}</td>
+          </tr>
+          <tr>
+            <td><strong>Cash Out Date:</strong></td>
+            <td>{{ cheque.cash_out_date }}</td>
+          </tr>
+          <tr>
+            <td><strong>Created At:</strong></td>
+            <td>{{ cheque.created_at }}</td>
+          </tr>
+          <tr>
+            <td><strong>Status:</strong></td>
+            <td>{{ cheque.status }}</td>
+          </tr>
+        </table>
+      </div>
+      <a class="back-link" href="{{ url_for('routes.dashboard') }}"
+        >Back to Dashboard</a
+      >
+    </div>
+  </body>
+</html>

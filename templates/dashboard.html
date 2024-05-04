@@ -112,20 +112,16 @@
             <tr>
               <th>Cheque ID</th>
               <th>Amount</th>
-              <th>Bank</th>
-              <th>Cash Out Date</th>
-              <th>Created At</th>
+              <th>Bank</th>          
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {% for cheque in cheque_history %}
             <tr {% if cheque.status == "Cashed Out" %}style="background-color: #f8d7da;"{% else %}style="background-color: #d4edda;"{% endif %}>
-              <td>{{ cheque.cheque_id }}</td>
+              <td><a href="{{ url_for('routes.cheque_detail', cheque_id=cheque.id) }}">{{ cheque.cheque_id }}</a></td>       
               <td>{{ cheque.amount }}</td>
-              <td>{{ cheque.bank }}</td>
-              <td>{{ cheque.cash_out_date }}</td>
-              <td>{{ cheque.created_at }}</td>
+              <td>{{ cheque.bank }}</td>            
               <td>{{ cheque.status }}</td>
             </tr>
             {% endfor %}
