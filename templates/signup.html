@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SIGN UP</title>
-    <!-- Link to external CSS file -->
     <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
@@ -21,7 +20,7 @@
     <div class="container">
       <h1>SIGN UP</h1>
       <p>Please fill out the form below to create an account.</p>
-      <form action="{{ url_for('routes.signup') }}" method="POST">
+      <form action="{{ url_for('auth_routes.signup') }}" method="POST">
         <div class="form-group">
           <label for="name">First Name</label>
           <input type="text" id="name" name="name" placeholder="Hüseyin" />
@@ -43,13 +42,10 @@
           <label for="email">E-mail</label>
           <input type="email" id="email" name="email" placeholder="" />
         </div>
-        <!-- New password input field -->
         <div class="form-group">
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="" />
         </div>
-
-        <!-- Confirm password input field -->
         <div class="form-group">
           <label for="password_confirmation">Confirm Password</label>
           <input
@@ -64,14 +60,11 @@
       </form>
     </div>
     <script>
-      // Select the flash messages container
       var flashMessages = document.getElementById("flash-messages");
-
-      // Hide the flash messages after 3 seconds
       if (flashMessages) {
         setTimeout(function () {
           flashMessages.style.display = "none";
-        }, 3000); // 3 seconds
+        }, 3000);
       }
     </script>
   </body>

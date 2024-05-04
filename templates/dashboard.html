@@ -119,7 +119,7 @@
           <tbody>
             {% for cheque in cheque_history %}
             <tr {% if cheque.status == "Cashed Out" %}style="background-color: #f8d7da;"{% else %}style="background-color: #d4edda;"{% endif %}>
-              <td><a href="{{ url_for('routes.cheque_detail', cheque_id=cheque.id) }}">{{ cheque.cheque_id }}</a></td>       
+              <td><a href="{{ url_for('cheque_routes.cheque_detail', cheque_id=cheque.id) }}">{{ cheque.cheque_id }}</a></td>       
               <td>{{ cheque.amount }}</td>
               <td>{{ cheque.bank }}</td>            
               <td>{{ cheque.status }}</td>
@@ -129,7 +129,7 @@
         </table>
       </div>
       <div class="logout-button">
-        <form action="{{ url_for('routes.logout') }}" method="post">
+        <form action="{{ url_for('auth_routes.logout') }}" method="post">
           <button type="submit">End Session</button>
         </form>
       </div>

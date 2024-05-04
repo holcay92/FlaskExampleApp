@@ -1,17 +1,17 @@
 <div class="navbar">
-  <a href="{{ url_for('routes.index') }}"><button>HOME</button></a>
-  <a href="{{ url_for('routes.cashout_cheque') }}"
+  <a href="{{ url_for('index_routes.index') }}"><button>HOME</button></a>
+  <a href="{{ url_for('cheque_routes.cashout_cheque') }}"
     ><button>CASHOUT CHEQUE</button></a
   >
-  <a href="{{ url_for('routes.deposit_cheque') }}"
+  <a href="{{ url_for('cheque_routes.deposit_cheque') }}"
     ><button>DEPOSIT CHEQUE</button></a
   >
   {% if 'user_id' not in session %}
-  <a href="{{ url_for('routes.signup') }}"><button>SIGNUP</button></a>
-  <a href="{{ url_for('routes.login') }}"><button>LOGIN</button></a>
+  <a href="{{ url_for('auth_routes.signup') }}"><button>SIGNUP</button></a>
+  <a href="{{ url_for('auth_routes.login') }}"><button>LOGIN</button></a>
   {% endif %} {% if 'user_id' is in session %}
   <a href="{{ url_for('routes.dashboard') }}"><button>DASHBOARD</button></a>
-  <a href="{{ url_for('routes.logout') }}"><button>LOGOUT</button></a>
+  <a href="{{ url_for('auth_routes.logout') }}"><button>LOGOUT</button></a>
 
   {% endif %}
 </div>
